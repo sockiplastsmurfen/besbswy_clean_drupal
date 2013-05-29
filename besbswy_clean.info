@@ -1,0 +1,5 @@
+name = BESbswy Clean
+description = Removes span's in textareas containing BESbswy before DB insert.
+package = Other
+core = 7.x
+version = 7.x-1.0-alpha1
