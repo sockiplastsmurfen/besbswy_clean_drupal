@@ -8,24 +8,24 @@
  */
 
 /**
- * Implements hook_node_presave().
+ * Implements hook_entity_presave().
  */
-function besbswy_clean_node_presave($node) {
-
+function besbswy_clean_entity_presave($node) {
   $n = json_encode($node);
-  $n = preg_replace('!<p><span(.*?)BESbswy<\\\/span><\\\/p>!', '', $n);
-  $n = preg_replace('!<span(.*?)BESbswy<\\\/span>!', '', $n);
+  var_dump($n);
+  $n = preg_replace('!<p><span(.*?)BESbswy[^<]*?<\\\\/span><\\\\/p>!', '', $n);
+  $n = preg_replace('!<span(.*?)BESbswy[^<]*?<\\\\/span>!', '', $n);
   $n = json_decode($n, TRUE);
 
   // Needs to be parsed since json_decode return arrays of arrays.
-  $n = (object)$n;
+  $n = (object) $n;
 
   if (isset($n->original)) {
-    $n->original = (object)$n->original;
+    $n->original = (object) $n->original;
   }
 
   foreach ($node as $key => $value) {
-    $node->$key = $n->$key;
+    $node->{$key} = $n->{$key};
   }
 }
 
@@ -33,19 +33,19 @@ function besbswy_clean_node_presave($node) {
  * Implements hook_form_alter().
  */
 function besbswy_clean_form_alter(&$form, &$form_state, $form_id) {
-  // Add extra validation for block add and edit
-  if($form_id == 'block_admin_configure' || $form_id == 'block_add_block_form') {
+  // Add extra validation for block add and edit.
+  if ($form_id == 'block_admin_configure' || $form_id == 'block_add_block_form') {
     $form['#validate'][] = '_besbswy_clean_block_validate';
   }
 }
 
 /**
- * Removes BESbswy span's from block body
+ * Removes BESbswy span's from block body.
  */
 function _besbswy_clean_block_validate($form, &$form_state) {
-  if(isset($form_state['values']['body']['value'])) {
+  if (isset($form_state['values']['body']['value'])) {
     $body = $form_state['values']['body']['value'];
-    $body = preg_replace('/<span(.*?)BESbswy<\/span>/', '', $body);
+    $body = preg_replace('!<span(.*?)BESbswy[^<]*?<\\\\/span>!', '', $body);
     $form_state['values']['body']['value'] = $body;
   }
 }
