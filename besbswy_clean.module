@@ -12,7 +12,6 @@
  */
 function besbswy_clean_entity_presave($node) {
   $n = json_encode($node);
-  var_dump($n);
   $n = preg_replace('!<p><span(.*?)BESbswy[^<]*?<\\\\/span><\\\\/p>!', '', $n);
   $n = preg_replace('!<span(.*?)BESbswy[^<]*?<\\\\/span>!', '', $n);
   $n = json_decode($n, TRUE);
